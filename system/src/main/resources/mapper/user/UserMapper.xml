@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hlf.platform.dao.user.UserMapper">
+  <resultMap id="BaseResultMap" type="com.hlf.platform.model.user.User">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="vipCode" jdbcType="VARCHAR" property="vipCode" />
+    <result column="dynamicVipCode" jdbcType="VARCHAR" property="dynamicVipCode" />
+    <result column="openId" jdbcType="VARCHAR" property="openId" />
+    <result column="inviterId" jdbcType="VARCHAR" property="inviterId" />
+  </resultMap>
+
+  <resultMap id="RoleInfo" type="com.hlf.platform.model.user.User" extends="BaseResultMap">
+    <collection property="roles" javaType="ArrayList" ofType="com.hlf.platform.model.role.Role">
+        <id column="id" property="id"/>
+        <result column="role_name" property="roleName"/>
+    </collection>
+  </resultMap>
+
+  <insert id="insert" parameterType="com.hlf.platform.model.user.User">
+    insert into t_user (id, username, password,telephone,vipCode,dynamicVipCode,openId,inviterId)
+    values (
+            #{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+      #{telephone,jdbcType=VARCHAR},#{vipCode,jdbcType=VARCHAR},#{dynamicVipCode,jdbcType=VARCHAR}
+      ,#{openId,jdbcType=VARCHAR},#{inviterId,jdbcType=VARCHAR}
+      )
+  </insert>
+
+    <select id="findUserByName" resultMap="RoleInfo">
+        select * from t_user, t_role ,t_permission where username = #{username}
+    </select>
+  <select id="getLatestId" resultType="java.lang.Integer">
+        select id from t_user order by id desc limit 1
+  </select>
+</mapper>
